@@ -3,6 +3,7 @@ package com.cupp.msu.photogallery
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
 import com.cupp.msu.photogallery.api.GalleryItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,12 +15,15 @@ private const val TAG = "PhotoGalleryViewModel"
 class PhotoGalleryViewModel : ViewModel() {
     private val photoRepository = PhotoRepository()
 
-    private val _galleryItems: MutableStateFlow<List<GalleryItem>> =
+   /* private val _galleryItems: MutableStateFlow<List<GalleryItem>> =
         MutableStateFlow(emptyList())
     val galleryItems: StateFlow<List<GalleryItem>>
-        get() = _galleryItems.asStateFlow()
+        get() = _galleryItems.asStateFlow()*/
 
-    init {
+    private val galleryitems = Pager(pagingConfig(PageSize = 10, enableplaceholders = false))
+
+    {
+        /*init {
         viewModelScope.launch {
             try {
                 val items = photoRepository.fetchPhotos()
@@ -29,5 +33,8 @@ class PhotoGalleryViewModel : ViewModel() {
                 Log.e(TAG, "Failed to fetch gallery items", ex)
             }
         }
-    }
+    }*/
+        Paging(photoRepository)
+    } .flow.cachedIn(viewModelScope)
+
 }

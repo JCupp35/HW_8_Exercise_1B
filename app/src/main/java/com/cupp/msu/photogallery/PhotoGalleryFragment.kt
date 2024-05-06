@@ -10,7 +10,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bignerdranch.android.photogallery.databinding.FragmentPhotoGalleryBinding
+import com.cupp.msu.photogallery.databinding.FragmentPhotoGalleryBinding
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class PhotoGalleryFragment : Fragment() {
@@ -38,8 +39,8 @@ class PhotoGalleryFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                photoGalleryViewModel.galleryItems.collect { items ->
-                    binding.photoGrid.adapter = PhotoListAdapter(items)
+                photoGalleryViewModel.galleryItems.collectLatest { pagingData ->
+                    (binding.photoGrid.adapter as PhotoListAdapter).submitData(pagingData)
                 }
             }
         }
